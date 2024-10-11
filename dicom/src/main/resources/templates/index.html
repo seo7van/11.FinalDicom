@@ -17,8 +17,69 @@
 
 </head>
 <body>
-	<h2>DICOM IMAGE VIEWE</h2>
-	<div id ="dicomImage"></div>
+	<h2>DICOM IMAGE VIEWER</h2>
+	
+	 <div class="row">
+        <div class="col-xs-2">
+            <label>Viewport Values:</label>
+            <div><span>Viewport Scale: </span><span id="layerViewportScale"></span></div>
+        </div>
+        <div class="col-xs-4">
+            <label>Layer CT Values:</label>
+            <div><span>Viewport Scale: </span><span id="layer1ViewportScale"></span></div>
+            <div><span>Layer Viewport Scale: </span><span id="layer1LayerViewportScale"></span></div>
+            <div><span>Layer Sync Scale: </span><span id="layer1LayerSyncScale"></span></div>
+        </div>
+        <div class="col-xs-4">
+            <label>Layer PET Values:</label>
+            <div><span>Layer Viewport Scale: </span><span id="layer2LayerViewportScale"></span></div>
+            <div><span>Layer Sync Scale: </span><span id="layer2LayerSyncScale"></span></div>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 20px;">
+        <div class="col-xs-10">
+            <div id="dicomImage"
+                 style="width:512px;height:512px;top:0px;left:0px;position:absolute"
+                 oncontextmenu="return false"
+                 onmousedown="return false">
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <div style="margin-bottom: 15px;">
+                <label for="syncViewports"> Sync Viewports
+                    <input id="syncViewports" name="syncViewports" type="checkbox" checked/>
+                </label>
+                <br>
+            </div>
+
+            <label for="layers">Select active layer</label>
+            <select name="layers" id="layers" size="2" style="width: 100%; min-width: 150px;"></select>
+            <div id="properties" style="width: 100%; min-width: 150px; margin-top: 15px;">
+                <label>Layer Properties</label>
+                <div style="width: 100%; padding: 5px 5px 5px 10px;">
+                    <div style="margin-bottom: 15px;">
+                        <label for="visible"> Visible
+                            <input name="visible" type="checkbox" checked/>
+                        </label>
+                        <br>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="colormaps"> Colormap </label>
+                        <select id="colormaps" style="width:100%">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="imageOpacity"> Opacity</label>
+                        <input id="imageOpacity" type="range" class="range" min=0 max=1 step=0.1 value=0>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-xs-12">
+        </div> -->
+    </div>
+
 	<script src="js/app.js"></script>
 	
 	

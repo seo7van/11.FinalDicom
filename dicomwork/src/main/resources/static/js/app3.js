@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-// 1.
+	// 1.
 	// cornerston초기화
 	cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 	cornerstoneWADOImageLoader.external.cornerstoneTools = cornerstoneTools;
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log('이미지 로드 실패 : ', err);
 	});
 	
-// 3. Add event handlers to zoom the image in and out
+	// 3. Add event handlers to zoom the image in and out
     document.getElementById('zoomIn').addEventListener('click', function (e) {
         const viewport = cornerstone.getViewport(element);
         viewport.scale += 0.25;

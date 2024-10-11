@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-// 1.
+	// 1.
 	// cornerston초기화
 	cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 	cornerstoneWADOImageLoader.external.cornerstoneTools = cornerstoneTools;
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log('이미지 로드 실패 : ', err);
 	});
 	
-// 2. Add event handler to the ww/wc apply button
+	// 2. Add event handler to the ww/wc apply button
     document.getElementById('apply').addEventListener('click', function (e) {
         let viewport = cornerstone.getViewport(element);
         viewport.voi.windowWidth = parseFloat(document.getElementById('ww').value);
