@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Search Result</title>
+</head>
+<body>
+    <h1>Search for Patient</h1>
+
+    <!-- 검색 폼 -->
+    <form action="/search" method="get">
+        <label for="pId">Enter Patient ID:</label>
+        <input type="text" id="pId" name="pId" placeholder="Enter Patient ID" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- 검색된 환자 정보 표시 -->
+    <div th:if="${patient != null}">
+        <h2>Patient Information</h2>
+        <p>Patient ID: <span th:text="${patient.pId}"></span></p>
+        <p>Patient Name: <span th:text="${patient.pName}"></span></p>
+    </div>
+
+    <!-- 환자를 찾지 못했을 때 -->
+    <div th:if="${error != null}">
+        <p th:text="${error}"></p>
+    </div>
+
+</body>
+</html>
