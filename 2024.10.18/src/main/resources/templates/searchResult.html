@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Search Result</title>
+</head>
+<body>
+    <h1>검색</h1>
+
+    <!-- 검색 폼 -->
+    <form action="/search" method="get">
+        <label for="pId">ID 검색:</label>
+        <input type="text" id="pId" name="pId" placeholder="Enter Patient ID" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- 검색된 스터디 환자 정보 표시 아이디로 검색 -->
+    <div th:if="${studyTabs != null}">
+        <h2>Study Information</h2>
+            <div th:each="study : ${studyTabs}">
+                <p>스터디 키 : <span th:text="${study.studyKey}"></span></p>
+                <p>환자 아이디 : <span th:text="${study.pId}"></span></p>
+                <p>환자 이름 : <span th:text="${study.pName}"></span></p>
+                <p>검사 장비 : <span th:text="${study.modality}"></span></p>
+                <p>검사 일시 : <span th:text="${study.studyDate}"></span></p>
+                <p>검사 설명 : <span th:text="${study.studyDesc}"></span></p>
+                <p>이미지갯수  : <span th:text="${study.imageCnt}"></span></p>
+                <p>시리즈 갯수  : <span th:text="${study.seriesCnt}"></span></p>
+                
+                
+                <p>Verify: 
+    <span th:text="${study.verifyFlag == 0 ? '미요청' : (study.verifyFlag == 1 ? '요청완료' : '알 수 없음')}"></span>
+</p>
+<!--                
+                
+                -->
+<!--                <p>판독 상태  : <span th:text="${study.readType}"></span></p>
+                
+                
+                
+                
+                <p>Verify  : <span th:text="${study.verifyFlag}"></span></p>-->
+                
+            </div>
+        
+    </div>
+
+    <!-- 스터디를 찾지 못했을 때 -->
+    <div th:if="${error != null}">
+        <p th:text="${error}"></p>
+    </div>
+
+</body>
+</html>
