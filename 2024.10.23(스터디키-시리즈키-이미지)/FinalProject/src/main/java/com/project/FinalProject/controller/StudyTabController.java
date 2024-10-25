@@ -53,10 +53,8 @@ public class StudyTabController {
                                 Model model) {
 
         
-        
 		List<StudyTab> studies = studyTabService.searchStudies(pId, pName, modality, startDate, endDate, reportStatus, verifyFlag);
         model.addAttribute("studyTabs", studies);
         return "searchResult";
         }
-	
-}
+	}

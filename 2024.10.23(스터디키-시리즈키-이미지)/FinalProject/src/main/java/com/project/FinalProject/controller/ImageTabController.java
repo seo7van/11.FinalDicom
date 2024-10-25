@@ -29,13 +29,12 @@ public class ImageTabController {
                                                   Model model) {
     	System.out.println("스터디 키: " + studyKey);
         System.out.println("시리즈 키: " + seriesKey);
-        
+   
         // 스터디 키와 시리즈 키로 이미지 목록을 가져옴
         List<ImageTab> images = imageTabService.getImagesByStudyKeyAndSeriesKey(studyKey, seriesKey);
         
         // 모델에 이미지 목록 추가
         model.addAttribute("images", images);
         return "imagePage";  // 이미지 목록을 보여줄 HTML 페이지
-	}
-
-}
+        }
+    }
