@@ -34,23 +34,23 @@ public class SeriesTabController {
 	@GetMapping("/series")
     public String getSeriesPage(@RequestParam(name = "studyKey") Long studyKey, Model model) {
         List<SeriesTab> seriesList = seriesTabService.getSeriesByStudyKey(studyKey);
-
-        // 각 시리즈에 대해 curSeqNum이 1인 이미지를 가져옵니다.
+        List<String> imagePaths = new ArrayList<>();  // imagePaths 초기화
+        
+     // 첫 번째 이미지 가져오기 로직 추가
         Map<Long, String> seriesFirstImageMap = new HashMap<>();
         for (SeriesTab series : seriesList) {
-            ImageTab firstImage = imageTabService.getFirstImageBySeries(series.getSeriesKey());
-            if (firstImage != null) {
-            	
-                String imagePath = "wadouri:PACSStorage/" + firstImage.getPath() + firstImage.getFName();
-                
-                System.out.println("Generated Image Path: " + imagePath.replace("\\", "/")); // 이미지 경로 확인
-                seriesFirstImageMap.put(series.getSeriesKey(), imagePath.replace("\\", "/"));
-                
+            Optional<ImageTab> firstImageOpt = imageTabService.getFirstImageByStudyKeyAndSeriesKey(studyKey, series.getSeriesKey());
+            if (firstImageOpt.isPresent()) {
+                ImageTab firstImage = firstImageOpt.get();
+                String imagePath = "wadouri:" + firstImage.getPath() + "/" + firstImage.getFName();
+                seriesFirstImageMap.put(series.getSeriesKey(), imagePath);
+            } else {
+                seriesFirstImageMap.put(series.getSeriesKey(), "Image not available");
             }
         }
 
         model.addAttribute("seriesList", seriesList);
-        model.addAttribute("seriesFirstImageMap", seriesFirstImageMap);
+        model.addAttribute("imagePaths", imagePaths);
         return "seriesPage";
 	}
 }
