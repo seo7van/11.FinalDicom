@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Series Thumbnail Page</title>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/cornerstone-core"></script>
+    <script src="https://unpkg.com/cornerstone-wado-image-loader"></script>
+    <script src="https://unpkg.com/dicom-parser"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>시리즈 목록</h2>
+        <div class="thumbnails">
+            <ul>
+                <li th:each="series, iter : ${seriesList}">
+                    <div class="thumbnail" style="cursor: pointer;">
+                        <img th:src="${thumbnailPaths[iter.index]?.thumbnailPath}" alt="Series Thumbnail"
+                             th:data-series-key="${series.seriesKey}">
+                        <span th:text="${series.seriesKey} + '번 시리즈'"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 큰 이미지 뷰어 -->
+        <div class="viewer" id="dicomViewer" style="width: 512px; height: 512px; margin: auto; border: 1px solid black;"></div>
+    </div>
+
+    <!-- JavaScript로 데이터 및 기능 구현 -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const studyKey = /*[[${studyKey}]]*/ ""; // studyKey를 JavaScript로 전달
+
+        // cornerstone 및 DICOM 파서 설정
+        cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+        cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+
+        cornerstoneWADOImageLoader.configure({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Accept', 'application/dicom');
+            }
+        });
+
+        const dicomViewer = document.getElementById('dicomViewer');
+        let currentSeriesImages = [];
+        let currentIndex = 0;
+
+        // 큰 뷰어 cornerstone 활성화
+        cornerstone.enable(dicomViewer);
+
+        // 이미지 로드 및 표시 함수
+        function loadAndDisplayImage(index) {
+            if (index < 0 || index >= currentSeriesImages.length) return;
+            const imageId = currentSeriesImages[index];
+            cornerstone.loadImage(imageId)
+                .then(image => {
+                    cornerstone.displayImage(dicomViewer, image);
+                    console.log("큰 뷰어 이미지 로드 성공:", imageId);
+                })
+                .catch(error => console.error("Image load error:", error));
+        }
+
+        // 시리즈 이미지를 로드하는 함수
+        function loadSeriesImages(seriesKey) {
+            fetch(`/series/images?studyKey=${studyKey}&seriesKey=${seriesKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    currentSeriesImages = data.seriesImagePaths;
+                    currentIndex = 0;
+                    loadAndDisplayImage(currentIndex);
+                })
+                .catch(error => console.error("Error loading images:", error));
+        }
+
+        // 썸네일 클릭 시 시리즈 이미지 로드
+        document.querySelectorAll(".thumbnail").forEach(thumbnail => {
+            thumbnail.addEventListener("click", () => {
+                const seriesKey = thumbnail.getAttribute("data-series-key");
+                loadSeriesImages(seriesKey);
+            });
+        });
+
+        // 마우스 스크롤로 이미지 탐색
+        dicomViewer.addEventListener('wheel', function(event) {
+            event.preventDefault();
+            if (event.deltaY > 0) {
+                currentIndex = Math.min(currentIndex + 1, currentSeriesImages.length - 1);
+            } else {
+                currentIndex = Math.max(currentIndex - 1, 0);
+            }
+            loadAndDisplayImage(currentIndex);
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>
