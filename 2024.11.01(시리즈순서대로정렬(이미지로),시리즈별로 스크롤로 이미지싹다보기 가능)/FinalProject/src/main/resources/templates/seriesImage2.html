@@ -18,10 +18,11 @@
 <script src="https://unpkg.com/dicom-parser"></script>
 
 <!-- JavaScript 인라인 Thymeleaf 변수 설정 -->
-<script th:inline="javascript"> 
-					 const imagePaths = /*[[${imagePaths}]]*/ []; 
-		/*<![CDATA[*/const seriesImagePaths = /*[[${seriesImagePaths}]]*/ []; /*]]>*/
-	</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const imagePaths = /*[[${imagePaths}]]*/ [];
+    /*]]>*/
+</script>
 
 <script>
     // cornerstone과 dicomParser 연결 설정
@@ -42,8 +43,8 @@
     cornerstone.enable(element);
 
     function loadAndDisplayImage(index) {
-        if (index < 0 || index >= seriesImagePaths.length) return;  // 유효한 인덱스 확인
-        const imageId = seriesImagePaths[index];
+        if (index < 0 || index >= imagePaths.length) return;  // 유효한 인덱스 확인
+        const imageId = imagePaths[index];
         cornerstone.loadImage(imageId)
             .then(image => {
                 cornerstone.displayImage(element, image);
@@ -59,7 +60,7 @@
     element.addEventListener('wheel', function(event) {
         event.preventDefault();
         if (event.deltaY > 0) { // Scroll down
-            currentIndex = Math.min(currentIndex + 1, seriesImagePaths.length - 1);
+            currentIndex = Math.min(currentIndex + 1, imagePaths.length - 1);
         } else { // Scroll up
             currentIndex = Math.max(currentIndex - 1, 0);
         }

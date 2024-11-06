@@ -70,6 +70,6 @@ public class SeriesTabController {
         }
 
         model.addAttribute("imagePaths", imagePaths);
-        return "seriesImage";
+        return "seriesPage";
     }
 }

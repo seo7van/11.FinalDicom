@@ -13,7 +13,7 @@
         <h2>시리즈 정보</h2>
         <ul>
             <!-- 시리즈별로 각 이미지 경로와 정보를 표시 -->
-            <li th:each="series : ${seriesList}" th:if="${series.imageCount > 0}">
+            <li th:each="series : ${seriesList}">
                 <!-- a 태그로 감싸서 전체 div가 링크로 작동하게 함 -->
                 <a th:href="@{/series/images(studyKey=${series.studyKey}, seriesKey=${series.seriesKey})}">
                     <div class="dicomImage" style="width:512px;height:512px;" data-index="[[${seriesList.indexOf(series)}]]">

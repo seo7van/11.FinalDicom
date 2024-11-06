@@ -7,13 +7,22 @@
 <body>
 <div class="container">
     <h1>Series Images</h1>
-    <p>마우스 스크롤을 사용해 이미지를 탐색할 수 있습니다.</p>
+    <p>마우스 스크롤로 이미지를 탐색할 수 있으며, 다양한 도구를 사용할 수 있습니다.</p>
 
     <div id="dicomViewer" style="width:512px; height:512px; margin:auto; border:1px solid black;"></div>
+
+    <!-- 도구 선택 버튼 -->
+    <div style="text-align:center; margin-top:10px;">
+        <button onclick="activateTool('wwwc')">창 너비/레벨</button>
+        <button onclick="activateTool('zoom')">확대/축소</button>
+        <button onclick="activateTool('pan')">이동</button>
+        <button onclick="activateTool('length')">거리 측정</button>
+    </div>
 </div>
 
 <!-- 코너스톤 및 관련 라이브러리 추가 -->
 <script src="https://unpkg.com/cornerstone-core"></script>
+<script src="https://unpkg.com/cornerstone-tools"></script>
 <script src="https://unpkg.com/cornerstone-wado-image-loader"></script>
 <script src="https://unpkg.com/dicom-parser"></script>
 
@@ -29,21 +38,32 @@
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
-    // cornerstoneWADOImageLoader 기본 설정
+    // cornerstone 및 cornerstoneTools 활성화
     cornerstoneWADOImageLoader.configure({
         beforeSend: function(xhr) {
             xhr.setRequestHeader('Accept', 'application/dicom');
         }
     });
-
     const element = document.getElementById('dicomViewer');
     let currentIndex = 0;
-
-    // cornerstone 활성화 및 첫 번째 이미지 로드
     cornerstone.enable(element);
 
+    // cornerstoneTools 설정
+    cornerstoneTools.init();
+    cornerstoneTools.addTool(cornerstoneTools.WwwcTool);
+    cornerstoneTools.addTool(cornerstoneTools.ZoomTool);
+    cornerstoneTools.addTool(cornerstoneTools.PanTool);
+    cornerstoneTools.addTool(cornerstoneTools.LengthTool);
+
+    // 기본 도구로 창 너비/레벨(Wwwc) 도구 설정
+    cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
+
+    function activateTool(toolName) {
+        cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    }
+
     function loadAndDisplayImage(index) {
-        if (index < 0 || index >= imagePaths.length) return;  // 유효한 인덱스 확인
+        if (index < 0 || index >= imagePaths.length) return;  
         const imageId = imagePaths[index];
         cornerstone.loadImage(imageId)
             .then(image => {
@@ -59,9 +79,9 @@
     // 마우스 스크롤 이벤트로 이미지 넘기기
     element.addEventListener('wheel', function(event) {
         event.preventDefault();
-        if (event.deltaY > 0) { // Scroll down
+        if (event.deltaY > 0) {
             currentIndex = Math.min(currentIndex + 1, imagePaths.length - 1);
-        } else { // Scroll up
+        } else {
             currentIndex = Math.max(currentIndex - 1, 0);
         }
         loadAndDisplayImage(currentIndex);

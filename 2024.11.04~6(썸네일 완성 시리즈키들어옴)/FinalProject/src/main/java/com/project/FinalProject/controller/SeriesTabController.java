@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.FinalProject.domain.ImageTab;
 import com.project.FinalProject.domain.SeriesTab;
@@ -50,13 +51,14 @@ public class SeriesTabController {
                 imagePaths.add(imageInfo);
             }
         }
-
+        model.addAttribute("studyKey", studyKey);
         model.addAttribute("seriesList", seriesList);
         model.addAttribute("imagePaths", imagePaths); // `imagePaths` 모델에 추가
         
         return "seriesPage";
 	}
 	
+/*
 	@GetMapping("/series/images")
     public String getSeriesImagesPage(@RequestParam(name = "studyKey") Long studyKey,
                                       @RequestParam(name = "seriesKey") Long seriesKey, Model model) {
@@ -70,28 +72,23 @@ public class SeriesTabController {
         }
         System.out.println("시리즈 이미지: " + seriesImagePaths);
         model.addAttribute("seriesImagePaths", seriesImagePaths);
-        return "seriesImage";
-    }
+        return "seriesPage";
+    }*/
 	
-	@GetMapping("/series/thumbnail")
-	public String getSeriesThumbnailPage(@RequestParam(name = "studyKey") Long studyKey, Model model) {
-	    List<SeriesTab> seriesList = seriesTabService.getSeriesByStudyKey(studyKey);
-	    List<Map<String, String>> thumbnailPaths = new ArrayList<>();
-
-	    // 각 시리즈에 대해 썸네일 이미지 설정
-	    for (SeriesTab series : seriesList) {
-	        ImageTab firstImage = imageTabService.getFirstImageBySeries(studyKey, series.getSeriesKey());
-	        if (firstImage != null) {
-	            String thumbnailPath = "wadouri:http://localhost:8080/PACSStorage/" + firstImage.getPath() + firstImage.getFName();
-	            Map<String, String> imageInfo = new HashMap<>();
-	            imageInfo.put("thumbnailPath", thumbnailPath.replace("\\", "/"));
-	            imageInfo.put("seriesKey", String.valueOf(series.getSeriesKey()));
-	            thumbnailPaths.add(imageInfo);
-	        }
+	@GetMapping("/series/images")
+	@ResponseBody // JSON 형식으로 반환
+	public List<String> getSeriesImages(
+			@RequestParam(name = "studyKey") Long studyKey,
+			@RequestParam(name = "seriesKey") Long seriesKey) {
+		
+		List<ImageTab> imageList = imageTabService.getAllImagesBySeries(studyKey, seriesKey);
+	    List<String> seriesImagePaths = new ArrayList<>();
+	    
+	    for (ImageTab image : imageList) {
+	    	String imagePath = "wadouri:http://localhost:8080/PACSStorage/" + image.getPath() + image.getFName();
+	        seriesImagePaths.add(imagePath.replace("\\", "/"));
 	    }
 
-	    model.addAttribute("seriesList", seriesList);
-	    model.addAttribute("thumbnailPaths", thumbnailPaths);
-	    return "seriesThumbnailPage"; // 썸네일 뷰 반환
+	    return seriesImagePaths; // JSON 형식으로 반환됨
 	}
 }

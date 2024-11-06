@@ -10,9 +10,11 @@
     
     <script th:inline="javascript"> 
 		/*<![CDATA[*/
+		const studyKey = /*[[${studyKey}]]*/ "";
 		const imagePaths = /*[[${imagePaths}]]*/ []; 
 		const seriesImagePaths = /*[[${seriesImagePaths}]]*/ []; 
 		/*]]>*/
+		console.log("studyKey 초기화 확인:", studyKey);
 		console.log("imagePaths 초기화 확인:", imagePaths);
     	console.log("seriesImagePaths 초기화 확인:", seriesImagePaths);
 	</script>
@@ -66,17 +68,17 @@
 
     <!-- 썸네일 목록을 좌측에 배치 -->
     <div class="thumbnail-list">
-        <ul style="list-style-type: none; padding: 0;"> <!-- 불필요한 점 제거 -->
-            <li th:each="series : ${seriesList}" th:if="${series.imageCount > 0}">
-                <div class="thumbnail dicomImage" 
-                     style="cursor:pointer;"
-                     data-index="[[${seriesList.indexOf(series)}]]">
-                    <!-- 텍스트와 이미지 분리 -->
-                    <span th:text="${series.seriesKey + '번 시리즈 (' + series.imageCount + '개)'}"></span>
-                </div>
-            </li>
-        </ul>
-    </div>
+    <ul style="list-style-type: none; padding: 0;"> <!-- 불필요한 점 제거 -->
+        <li th:each="series : ${seriesList}" th:if="${series.imageCount > 0}">
+            <div class="thumbnail dicomImage" 
+                 style="cursor:pointer;"
+                 th:data-series-key="${series.seriesKey}">
+                 
+                <span th:text="${series.seriesKey + '번 시리즈 (' + series.imageCount + '개)'}"></span>
+            </div>
+        </li>
+    </ul>
+</div>
 
     <!-- 오른쪽에 큰 이미지 뷰어가 나올 위치 -->
     <div class="viewer" id="dicomViewer"></div>
