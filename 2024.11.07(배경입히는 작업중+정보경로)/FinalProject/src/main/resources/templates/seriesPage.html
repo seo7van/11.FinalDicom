@@ -18,6 +18,7 @@
     	console.log("seriesImagePaths 초기화 확인:", seriesImagePaths);
 	</script>
 	
+	<link rel="stylesheet" href="/css/home.css">
 	<script src="/js/seriesPage.js"></script>
 
 <style>
@@ -71,7 +72,9 @@
     <div th:each="series : ${seriesList}" 
          th:if="${series.imageCount > 0}" 
          class="thumbnail dicomImage"
+         
          style="cursor: pointer; margin-bottom: 10px; border: 1px solid #ccc; padding: 5px;"
+         
          th:data-series-key="${series.seriesKey}">
         <span th:text="${series.seriesKey + '번 시리즈 (' + series.imageCount + '개)'}"></span>
     </div>
