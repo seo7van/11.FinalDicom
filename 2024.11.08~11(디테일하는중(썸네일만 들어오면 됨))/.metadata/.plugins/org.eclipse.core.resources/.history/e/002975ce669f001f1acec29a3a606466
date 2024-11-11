@@ -1,0 +1,97 @@
+// 홈 로고 클릭 시 홈으로 이동
+document.getElementById('home').addEventListener('click', function () {
+	window.location.href = 'http://localhost:8080/home';
+});
+
+// 리포트 부분
+axios.get(`/report/${studyKey}`)
+.then(response => {
+	const data = response.data;
+	// 코멘트, 작성자, 작성날짜 뷰에 보여주기
+	if (data) {
+		document.getElementById('comment').value = data.reportComment || '';
+		document.getElementById('radiologist1').value = data.userName || '';
+		document.getElementById('report-date').value = data.reportTime || '날짜 정보 없음';
+		}})
+		.catch(error => console.error('헤헤 에러났다', error));
+
+	// 리포트 내 저장 버튼 클릭 시 YYYY-MM-DDTHH:MM:SS 형식으로 서버로 전송
+	document.getElementById('save-report').addEventListener('click', function () {
+		const now = new Date();
+		const reportTime = new Date().toISOString().slice(0, 19).replace("T", "T");
+	
+	// 저장할 리포트 데이터를 하나의 객체로 묶어서 준비
+		const reportData = {
+			studyKey: studyKey, 
+			reportComment: document.getElementById('comment').value,
+			userName: document.getElementById('radiologist1').value,
+			reportTime: reportTime
+		};
+		
+		axios.post('/report/save', reportData)
+			.then(response => {
+				console.log('Report saved:', response.data);
+				alert('저장되었습니다!');
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				alert('저장에 실패했습니다.');
+			});
+	});
+
+// 토글 섹션 표시/숨김 함수 정의
+function toggleSection(buttonId, sectionId) {
+	const button = document.getElementById(buttonId);
+	const section = document.getElementById(sectionId);
+	const allSections = document.querySelectorAll('.study-info, .past-info, .series-info, .report-info');
+	const imageViewer = document.getElementById('image-viewer');
+
+	button.addEventListener('click', () => {
+		// 섹션을 클릭했을때 관련된 내용만 show효과로 노출, 나머지는 숨기기
+    	allSections.forEach(sec => sec.classList.toggle('show', sec === section));
+		});
+		
+	// 이미지 뷰어 위치 조정
+	const anySectionShown = Array.from(allSections).some(sec => sec.classList.contains('show'));
+	if (anySectionShown) {
+		imageViewer.classList.add('shifted');
+		} else {
+		imageViewer.classList.remove('shifted');
+		}
+}
+
+// 버튼을 눌렀을때 토글 호출 (표시/숨김)(각 버튼과 각 섹션을 연결하는 역할)
+toggleSection('toggle-info-btn', 'study-info');
+toggleSection('toggle-past-btn', 'past-info');
+toggleSection('toggle-series-btn', 'series-info');
+toggleSection('toggle-report-btn', 'report-info');
+
+// 리포트 - 코멘트 영역에 기본 텍스트 추가
+document.getElementById('comment').value = "[Finding]\n\n\n[Conclusion]\n\n\n[Recommend]\n\n\n";
+
+
+// 판독 지우기 버튼
+document.getElementById('delete-report').addEventListener('click', function () {
+	document.getElementById('comment').value = '[Finding]\n\n\n[Conclusion]\n\n\n[Recommend]\n\n\n';
+});
+
+// 과거내역 span odd 행 색깔 바꾸기
+document.getElementById('toggle-past-btn').addEventListener('click', function () {
+	const pastInfo = document.getElementById('past-info');
+
+	if (pastInfo.classList.contains('show')) {
+		const rows = document.querySelectorAll('#past-info .past-info-table .past-info-body');
+
+		rows.forEach((row, rowIndex) => {
+			const spans = row.querySelectorAll('span');
+
+			spans.forEach((span, index) => {
+				if (rowIndex % 2 == 0) {
+					span.style.backgroundColor = 'hsl(180, 20%, 28%)';
+				} else {
+					span.style.backgroundColor = '';
+				}
+			});
+		});
+	}
+});
