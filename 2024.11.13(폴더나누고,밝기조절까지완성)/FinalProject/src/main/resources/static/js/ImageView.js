@@ -127,8 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	
 	//밝기 조절
-	document.getElementById('enableWwwcTool').addEventListener('click', function () {
+	document.getElementById('windowLevel').addEventListener('click', function () {
 		enableWwwcTool(dicomViewer);
 	});
+	
+	//흑백 전환
+	document.getElementById('invert').addEventListener('click', function () {
+		invert(dicomViewer);
+	});
+	
 		
 });

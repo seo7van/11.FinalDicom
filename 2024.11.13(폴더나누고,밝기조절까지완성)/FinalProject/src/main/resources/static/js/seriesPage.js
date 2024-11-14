@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                }
            }
        });
-    } 
+    }
 
    //썸네일 활성화
    function loadSeriesImages() {    

@@ -1,7 +1,6 @@
-let windowLevelEnabled = false; // 윈도우 레벨 기능이 활성화되었는지 여부
+let windowLevelEnabled = false; // 윈도우 레벨 기능 초기화
 
 function enableWwwcTool(dicomViewer) {
-
 	windowLevelEnabled = !windowLevelEnabled;
 	
 	if(windowLevelEnabled) {
