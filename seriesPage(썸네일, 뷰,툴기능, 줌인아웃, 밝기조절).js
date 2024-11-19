@@ -13,14 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 	
-	// 이미지 요소 가져오기
+	// 썸네일 클릭시 뷰어에 이미지 요소 가져오기
     const dicomViewer = document.getElementById('image-viewer'); 
     let currentSeriesImages = []; // 현재 선택된 시리즈의 이미지 경로 배열
     let currentIndex = 0;
     let autoPlayInterval;
 
-	// 썸네일클릭했을때 뷰어 활성화
-	cornerstone.enable(dicomViewer);
+
 	// cornerstoneTools 초기화(활성화시 커서 변경 true)
 	cornerstoneTools.init({ showSVGCursors: true });
 
@@ -33,29 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
 	cornerstoneTools.addToolForElement(dicomViewer, cornerstoneTools.ZoomTool);
 	cornerstoneTools.addToolForElement(dicomViewer, cornerstoneTools.EraserTool);
 	cornerstoneTools.addToolForElement(dicomViewer, cornerstoneTools.RotateTool);	
-   
-   // 썸네일 클릭 시 이미지 로드 및 표시
-    document.querySelectorAll(".dicomImage").forEach((element, index) => {
-		element.addEventListener("click", () => {						
-			const seriesKey = element.getAttribute("data-series-key");
-			fetch(`/series/images?studyKey=${studyKey}&seriesKey=${seriesKey}`)
-			.then(response => {
-				if (!response.ok) {
-					throw new Error("네트워크 응답에 문제가 있습니다.");
-				}
-				return response.json(); // JSON 형식으로 변환
-			})
-				
-			.then(data => {
-				currentSeriesImages = data;
-				currentIndex = 0;
-				loadAndDisplayImage(currentIndex);
-			})
-			.catch(error => console.error("썸네일 클릭시 뷰에 이미지 로드 에러:", error));
-		});
-	});
+
+	// 토글 섹션 표시/숨김 및 DICOM 이미지 로드
+    function toggleSection(buttonId, sectionId) {
+        const button = document.getElementById(buttonId);
+        const section = document.getElementById(sectionId);
+        const allSections = document.querySelectorAll('.study-info, .past-info, .series-info, .report-info');
+        const imageViewer = document.getElementById('image-viewer');
+
+        button.addEventListener('click', () => {
+        const isSectionVisible = section.classList.contains('show');
+
+        // 모든 섹션에서 'show' 클래스 제거 (열었다 닫았다 가능)
+        allSections.forEach(sec => sec.classList.remove('show'));
+        
+	        // 클릭된 섹션이 닫혀 있는 경우에만 열기
+	        if (!isSectionVisible) {
+	            section.classList.add('show');
 	
-	//썸네일 클릭 시 뷰어 활성화
+	            // 시리즈 (series-info) 활성화된 경우 DICOM 이미지 로드 및 표시
+	            if (sectionId === 'series-info') {
+	                loadSeriesImages();
+	            }
+	        }
+	    });
+    } 
+
+	//썸네일 활성화
 	function loadSeriesImages() {    
 	    document.querySelectorAll(".dicomImage").forEach((element, index) => {
 			
@@ -76,6 +79,34 @@ document.addEventListener("DOMContentLoaded", () => {
 		}});
 	}
 
+	// 썸네일 클릭 시 이미지 로드 및 표시
+    document.querySelectorAll(".dicomImage").forEach((element, index) => {
+		element.addEventListener("click", () => {
+			
+			const seriesKey = element.getAttribute("data-series-key");
+			fetch(`/series/images?studyKey=${studyKey}&seriesKey=${seriesKey}`)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error("네트워크 응답에 문제가 있습니다.");
+				}
+				return response.json(); // JSON 형식으로 변환
+			})
+				
+			.then(data => {
+				currentSeriesImages = data;
+				currentIndex = 0;
+				loadAndDisplayImage(currentIndex);
+			})
+			.catch(error => console.error("썸네일 클릭시 뷰에 이미지 로드 에러:", error));
+		});
+	});
+	
+	// 버튼을 눌렀을 때 토글 호출 (표시/숨김)(각 버튼과 각 섹션을 연결하는 역할)
+    toggleSection('toggle-info-btn', 'study-info');
+    toggleSection('toggle-past-btn', 'past-info');
+    toggleSection('toggle-series-btn', 'series-info');
+    toggleSection('toggle-report-btn', 'report-info');
+
     // 뷰어에서 이미지 로드 및 표시 함수
     function loadAndDisplayImage(index) {
 		if (index < 0 || index >= currentSeriesImages.length) return;
@@ -83,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
         cornerstone.loadImage(imageId)
         .then(image => {
 			cornerstone.displayImage(dicomViewer, image);
-			mainTools(dicomViewer); //mainTools.js 호출
 			console.log("큰화면에 썸네일 로드 성공 !:", imageId);
         })
         .catch(error => console.error("Image load error:", error));
@@ -99,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         loadAndDisplayImage(currentIndex);
     });
-
+        
 	// 뷰 자동재생 기능
     document.getElementById('playClip').addEventListener('click', () => {		
 		if (autoPlayInterval) {
@@ -114,4 +144,23 @@ document.addEventListener("DOMContentLoaded", () => {
 				document.getElementById('playClip').innerText = "자동재생 중지 ! ";
 		}
 	});
+	
+	// 뷰 줌 인
+	document.getElementById('zoomIn').addEventListener('click', function () {
+	    zoomIn(dicomViewer);
+	    
+	});
+	
+	// 뷰 줌 아웃
+	document.getElementById('zoomOut').addEventListener('click', function () {
+	    zoomOut(dicomViewer);
+	    
+	});
+	
+	//밝기 조절
+	document.getElementById('enableWwwcTool').addEventListener('click', function () {
+		enableWwwcTool(dicomViewer);
+	});
+		
 });
+	

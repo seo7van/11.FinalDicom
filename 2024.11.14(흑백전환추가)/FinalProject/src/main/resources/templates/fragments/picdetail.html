@@ -20,6 +20,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 	<link rel="stylesheet" href="/css/picdetail.css">
+	<link rel="stylesheet" href="/css/toolBar.css">
+	<link rel="stylesheet" href="/css/content.css">
 </head>
 
 <body>
@@ -96,12 +98,17 @@
 				<!-- 시리즈 정보 -->
 				<div id="series-info" class="series-info">
 					<span>시리즈 정보</span>
-					<div th:each="series : ${seriesList}" 
-         			     th:if="${series.imageCount > 0}" 
-                         class="thumbnail dicomImage"
-         			 	 th:data-series-key="${series.seriesKey}">
-        			     <span th:text="${series.seriesKey + '번 시리즈 (' + series.imageCount + '개)'}"></span>
-        			</div>
+					<div class="thumbnail"
+					
+					     th:each="series : ${seriesList}" 
+					     th:if="${series.imageCount > 0}" 
+					 	 th:data-series-key="${series.seriesKey}">
+						 
+					 	 <div class="thumbnail dicomImage">
+							   <span th:text="${series.seriesKey + '번 시리즈 (' + series.imageCount + '개)'}"></span>
+							   <canvas class="cornerstone-canvas" width="100" style="display: block;" height="212"></canvas>
+						</div>
+					</div>
 					<div th:if="${seriesList == null || seriesList.isEmpty()}">
 						<p>시리즈 정보가 없습니다.</p>
 					</div>
@@ -146,14 +153,16 @@
 	</script>
 
 	<script src="/js/seriesPage.js"></script>
-	<script src="/js/ImageView.js"></script>
+	<script src="/js/ImageView.js"></script>	
 	<!-- 리포트 js -->
 	<script src="/js/report.js"></script>
 	
 	<!-- 툴바 js -->
+	<script src="/js/mainTools.js"></script>
 	<script src="/js/tools/zoom.js"></script>
 	<script src="/js/tools/windowLevel.js"></script>
 	<script src="/js/tools/invert.js"></script>
+	<script src="/js/tools/seriesLayout.js"></script>
 	
 </body>
 </html>
