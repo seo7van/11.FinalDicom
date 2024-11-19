@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	
 	<title>Study Detail</title>
-
+	
 	<!-- cornerstone 라이브러리 -->
 	<script src="https://unpkg.com/cornerstone-core"></script>
 	<script src="https://unpkg.com/cornerstone-wado-image-loader"></script>
@@ -14,12 +14,15 @@
 	<script src="https://unpkg.com/cornerstone-tools/dist/cornerstoneTools.js"></script>
 	<script src="https://unpkg.com/cornerstone-math"></script>
 	<script src="https://unpkg.com/hammerjs"></script>
+	
+	
 	<!-- dicom 라이브러리 -->
 	<script src="https://unpkg.com/dicom-parser"></script>
 	<!-- Axios 라이브러리 -->
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+	
 	<link rel="stylesheet" href="/css/picdetail.css">
+
 </head>
 
 <body>
@@ -34,16 +37,16 @@
 				<button id="toggle-series-btn">시리즈</button>
 				<button id="toggle-report-btn">리포트</button>
 			</div>
-			<!-- <div class="sidebar-down-item">
+			<div class="sidebar-down-item">
 				<button id="setting">설정</button>
 				<button>로그아웃</button>
-			</div> -->
+			</div>
 		</div>
 		
 		<div class="main-content">
 			<!-- 이전, 다음, 윈도우 레벨 등 가로 툴바 버튼 -->
 			<div th:replace="~{fragments/toolBar :: tool-bar}"></div>
-
+			
 			<div class="content">
 				<!-- 스터디 정보 -->
 				<div id="study-info" class="study-info">
@@ -74,10 +77,10 @@
 						<div class="past-info-table">
                             <div class="past-info-div">
                                 <div class="past-info-header">
-                                    <span>검사<br>장비</span>
+                                    <span>검사 장비</span>
                                     <span>검사 설명</span>
                                     <span>검사 일시</span>
-                                    <span>판독<br>상태</span>
+                                    <span>판독 상태</span>
                                 </div>
                                 <div class="past-info-body" th:each="study : ${pastStudies}">
                                     <span th:text="${study.modality}"></span>
@@ -145,6 +148,8 @@
 	console.log("seriesImagePaths 초기화 확인:", seriesImagePaths);
 	</script>
 
+	<!-- 코너스톤 관련.js 먼저 로드하기 -->
+	<!--<script src="/js/cornerstone-setup.js"></script>-->
 	<script src="/js/seriesPage.js"></script>
 	<script src="/js/ImageView.js"></script>
 	<!-- 리포트 js -->

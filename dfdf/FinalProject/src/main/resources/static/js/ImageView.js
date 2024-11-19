@@ -135,4 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById('invert').addEventListener('click', function () {
 		invert(dicomViewer);
 	});
+	
+		
 });
