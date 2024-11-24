@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Example Home</title>
+	<link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+	<div class="main-container">
+		<!-- 상단,하단 All -->
+		<div class="container">
+			<!-- 상단 패널 (검색과 검색 결과) -->
+			<div class="top-panel">
+				<!-- 아이디, 이름, 달력 검색 부분 -->
+				<div class="search-panel">
+					<!-- 달력 검색 부분 -->
+					<div class="calendar-panel">
+						<div class="calendar-header">
+							<button id="prev-month">&lt;</button>
+							<span id="calendar-title"></span>
+							<button id="next-month">&gt;</button>
+						</div>
+						<table>
+							<thead>
+								<tr>
+									<th>일</th>
+									<th>월</th>
+									<th>화</th>
+									<th>수</th>
+									<th>목</th>
+									<th>금</th>
+									<th>토</th>
+								</tr>
+							</thead>
+							<tbody id="calendar-body"></tbody>
+						</table>
+					</div>
+
+					<!-- 환자 ID 검색 -->
+					<div class="input-section">
+						<label for="pId">환자 ID</label>
+						<input type="text" id="pId" name="pId" placeholder="환자 ID를 입력하세요">
+						<!-- 환자 이름 검색 -->
+						<label for="pName">환자 이름</label>
+						<input type="text" id="pName" name="pName" placeholder="환자 이름을 입력하세요">
+						<!-- 검색 일자 -->
+						<div class="date-range-container">
+							<label for="startDate">검사일자</label>
+							<input type="date" id="startDate">
+							<span>~</span>
+							<input type="date" id="endDate">
+						</div>
+						<!-- 1일,3일,1주일 단위 -->
+						<div class="quick-range-buttons">
+							<button id="one-day-btn">1일</button>
+							<button id="three-day-btn">3일</button>
+							<button id="week-btn">1주일</button>
+						</div>
+						<!-- 조회, 재설정 버튼 -->
+						<div class="buttons">
+							<button class="search-btn">조회</button>
+							<button class="reset-btn" id="reset-btn">재설정</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- 상단패널, 검색 결과  -->
+				<div class="right-panel">
+					<!-- 젤 상단 패널 (검사장비,Verify,판독 상태 + 현재 검색된 환자ID,이름)-->
+					<div class="verify-panel">
+						<div class="verify-row">
+							<!-- 검사 장비 -->
+							<div class="verify-item">
+								<label for="modality">검사장비</label>
+								<select id="modality" name="modality" th:value="${modality != null ? modality : ''}">
+									<option value="">선택해주세요</option>
+									<option value="AS">AS</option>
+									<option value="AU">AU</option>
+									<option value="BI">BI</option>
+									<option value="CD">CD</option>
+									<option value="CF">CF</option>
+									<option value="CP">CP</option>
+									<option value="CR">CR</option>
+									<option value="CS">CS</option>
+									<option value="CT">CT</option>
+									<option value="DD">DD</option>
+									<option value="DF">DF</option>
+									<option value="DG">DG</option>
+									<option value="DM">DM</option>
+									<option value="DR">DR</option>
+									<option value="DS">DS</option>
+									<option value="DX">DX</option>
+									<option value="EC">EC</option>
+									<option value="ES">ES</option>
+									<option value="FA">FA</option>
+									<option value="FS">FS</option>
+									<option value="LS">LS</option>
+									<option value="LP">LP</option>
+									<option value="MA">MA</option>
+									<option value="MR">MR</option>
+									<option value="MS">MS</option>
+									<option value="NM">NM</option>
+									<option value="OT">OT</option>
+									<option value="PT">PT</option>
+									<option value="RF">RF</option>
+									<option value="RG">RG</option>
+									<option value="ST">ST</option>
+									<option value="TG">TG</option>
+									<option value="US">US</option>
+									<option value="VF">VF</option>
+									<option value="XA">XA</option>
+								</select>
+							</div>
+							<!-- Verify -->
+							<div class="verify-item">
+								<label for="verifyFlag">Verify</label>
+								<select id="verifyFlag" th:value="${verifyFlag != null ? verifyFlag : ''}">
+									<option value="">선택하세요</option> <!-- 선택되지 않음 -->
+									<option value="0">미요청</option>
+									<option value="1">요청완료</option>
+								</select>
+							</div>
+							<!-- 판독 상태 -->
+							<div class="verify-item">
+								<label for="reportStatus">판독 상태</label>
+								<select id="reportStatus" name="reportStatus"
+									th:value="${reportStatus != null ? reportStatus : ''}">
+									<option value="">선택하세요</option>
+									<option value="3">읽지 않음</option>
+									<option value="5">예비 판독</option>
+									<option value="6">판독</option>
+								</select>
+							</div>
+
+							<!-- 현재 검색된 환자 ID랑 이름 -->
+							<div class="patient-info">
+								<div class="patient-id">
+									<label>환자 ID : </label>
+									<span id="patient-id-item"></span>
+								</div>
+
+								<div class="patient-name">
+									<label>환자 이름 : </label>
+									<span id="patient-name-item"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 총검사건수,다운,더보기 등 -->
+					<div class="inspections-panel">
+						<div class="inspections-row">
+							<!-- 총 검사 건수 -->
+							<div class="inspections-item">
+								<label>총 검사 건수 : </label>
+								<span id="inspections">0</span>
+							</div>
+							<div class="right-controls">
+								<!-- 이미지 다운로드,검사 삭제 -->
+								<div class="download-panel">
+									<button class="download-btn" id="dicom-download-btn">DICOM 다운로드</button>
+									<button class="download-btn" id="image-download-btn">이미지 다운로드</button>
+									<button class="download-btn" id="delete-btn">검사 삭제</button>
+								</div>
+								<!-- <div class="select-panel2">
+									<select id="view-select">
+										<option value="all">보기 선택</option>
+										<option value="20">20개씩 보기</option>
+										<option value="50">50개씩 보기</option>
+										<option value="100">100개씩 보기</option>
+									</select>
+								</div> -->
+							</div>
+						</div>
+					</div>
+
+					<!-- 검색 결과 패널 -->
+					<div class="result-panel">
+						<div class="result-table">
+							<div class="result-table-container">
+								<!-- 검색  결과(환자ID~Verify) -->
+								<div class="result-table-thead">
+									<span>환자 ID</span> <span>환자 이름</span> <span>검사 장비</span> <span>검사
+										설명</span> <span>검사 일시</span> <span>판독 상태</span> <span>시리즈</span>
+									<span>이미지</span>
+									<span>Verify</span>
+								</div>
+								<div class="result-table-result">
+									<!-- 검색 결과 출력 -->
+								</div>
+								<button id="load-more-btn" style="display: none;">더보기</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 하단 패널 (과거검사이력, 리포트) -->
+			<div class="bottom-panels">
+				<!-- 과거 검사 이력 -->
+				<div class="history-panel">
+					<h3>과거 검사 이력</h3>
+					<div class="history-name">
+						<div class="history-id">
+							<label>환자 ID : </label>
+							<span id="history-patient-id"></span>
+						</div>
+						<div class="history-name-item">
+							<label>환자 이름 : </label>
+							<span id="history-patient-name"></span>
+						</div>
+					</div>
+					<!-- 검사장비, 검사설명, 검사일시, 판독상태, 시리즈, Verify -->
+					<div class="history-info-container">
+						<div class="history-table">
+							<div class="history-table-thead">
+								<span>검사 장비</span>
+								<span>검사 설명</span>
+								<span>검사 일시</span>
+								<span>판독 상태</span>
+								<span>시리즈</span>
+								<span>Verify</span>
+							</div>
+							<div class="history-table-result">
+								<!-- 과거 검사 이력 출력 -->
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 리포트 이력 -->
+				<div class="report-panel">
+					<h3>리포트 (Study 정보)</h3>
+					<div class="study-info-container">
+						<div class="ai-content">
+							<label>AI 진단 병명</label>
+							<div id="aiFinding" class="info-item"></div>
+							<label>AI 진단 내용</label>
+							<div id="aiReport" class="info-item"></div>
+						</div>
+						<!-- 수술한 의사, 촬영방향, 촬영부위, 검사설명 -->
+						<div class="filming-info">
+							<label>수술한 의사</label>
+							<div id="operatorsName" class="info-item"></div>
+							<label>촬영 방향</label>
+							<div id="viewPosition" class="info-item"></div>
+							<label>촬영 부위</label>
+							<div id="bodyPart" class="info-item"></div>
+							<label>검사 설명</label>
+							<div id="studyDesc" class="info-item"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 달력 및 기타 스크립트 -->
+		<script src="/js/tools/calendar.js"></script>
+		<!-- 검색 부분 -->
+		<script src="/js/search.js"></script>
+</body>
+
+</html>

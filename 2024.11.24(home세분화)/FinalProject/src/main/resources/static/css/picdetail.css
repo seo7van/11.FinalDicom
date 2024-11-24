@@ -1,0 +1,228 @@
+/* ---------------공통 스타일--------------- */
+body {
+	margin: 0;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	background-color: #2F4F4F;
+	color: #fff;
+	line-height: 1.6;
+}
+/* ---------------------------------------- */
+
+/* 로고 이미지 */
+.logo-img {
+	width: 100%;
+	height: auto;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+/* 전체 */
+.container {
+	display: flex;
+	height: 100vh;
+	width: 93%;
+	margin: auto;
+}
+
+/* 정보, 과거내역, 시리즈, 리포트, 설정, 로그아웃 세로버튼 */
+.sidebar {
+	width: 80px;
+	background-color: #3D5C5C;
+	margin: 40px 20px;
+	padding: 20px 15px 10px;
+	box-sizing: border-box;
+	border-right: 1px solid #444;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+	gap: 300px;
+	border-radius: 20px;
+}
+
+.sidebar button {
+	margin: 15px 0;
+	width: 50px;
+	height: 50px;
+	border: none;
+	border-radius: 12px;
+	background-color: #406b6b;
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar button:hover {
+	background-color: #25403C;
+	transform: translateY(-3px);
+}
+
+.sidebar button:active {
+	background-color: #1e3330;
+}
+
+/* 툴바, 스터디, 과거내역, 시리즈, 리포트, 이미지뷰 */
+.main-content {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+	background-color: #2F4F4F;
+}
+
+/* 세부 전체 (스터디, 과거내역, 시리즈, 리포트, 이미지) */
+/* 세부 툴바 중 상단 툴바는 mainToolBar로 분리 */
+/* content(스터디, 과거내역, 리포트, ,이미지) 분리 */
+.content {
+	display: flex;
+	width: 1670px;
+	flex-grow: 1;
+	background-color: #3D5C5C;
+	padding: 20px;
+	margin: 10px;
+	box-sizing: border-box;
+	transition: all 0.3s ease;
+	overflow:  hidden !important;
+	border-radius: 20px;
+	box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+	border: 2px solid aliceblue;
+}
+.study-info, 
+.past-info, 
+.series-info, 
+.report-info {
+	display: none;
+	width: 400px;
+	min-height: 300px;
+	overflow: auto;
+	flex-direction: column;
+	background-color: #2E4B4B;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	transition: all 1s ease;
+}
+
+.study-info.show, 
+.past-info.show, 
+.series-info.show, 
+.report-info.show {
+	display: flex;
+	width: 400px;
+	height: 732px;
+	min-height: 300px;
+	overflow: auto;
+	position: absolute;
+}
+
+.study-info span, 
+.past-info span, 
+.series-info span, 
+.report-info span {
+	font-weight: bold;
+	margin-bottom: 10px;
+	font-size: 18px;
+}
+
+.study-info div, 
+.past-info div, 
+.series-info div, 
+.report-info div {
+	margin-bottom: 8px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #ccc;
+}
+.study-info textarea, 
+.past-info textarea, 
+.series-info textarea,
+.report-info textarea {
+	width: 100%;
+	background-color: #1E2F2F;
+	color: #fff;
+	border: 1px solid #444;
+	border-radius: 4px;
+	padding: 8px;
+	margin-bottom: 10px;
+	font-size: 14px;
+}
+
+.study-info input,
+.past-info input,
+.series-info input,
+.report-info input {
+	width: 100%;
+	background-color: #1E2F2F;
+	color: #fff;
+	border: 1px solid #444;
+	border-radius: 4px;
+	padding: 8px;
+	margin-bottom: 10px;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+.study-info textarea, 
+.past-info textarea, 
+.series-info textarea,
+.report-info textarea {
+	height: 200px;
+	resize: both;
+	overflow: hidden;
+	margin-top: 5px;
+}
+
+.study-info button, 
+.past-info button, 
+.series-info button, 
+.report-info button {
+	background-color: #406b6b;
+	color: #fff;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	font-size: 14px;
+	margin-top: 10px;
+}
+
+.study-info button:hover, 
+.past-info button:hover, 
+.series-info button:hover,
+.report-info button:hover {
+	background-color: #25403C;
+	transform: translateY(-3px);
+}
+
+.study-info button:active, 
+.past-info button:active, 
+.series-info button:active,
+.report-info button:active {
+	background-color: #1e3330;
+}
+
+/* 스크롤 바 */
+.study-info::-webkit-scrollbar,
+.past-info::-webkit-scrollbar,
+.series-info::-webkit-scrollbar,
+.report-info::-webkit-scrollbar {
+	width: 15px; /* 세로축 스크롤바 폭 너비 */
+}
+
+.study-info::-webkit-scrollbar-thumb,
+.past-info::-webkit-scrollbar-thumb,
+.series-info::-webkit-scrollbar-thumb,
+.report-info::-webkit-scrollbar-thumb {
+	background: #213939;
+	border: 2px solid #2a3f33;
+	border-radius: 12px 12px 12px 12px; /* 모서리 둥글게 */
+}
+
+.study-info::-webkit-scrollbar-thumb:hover,
+.past-info::-webkit-scrollbar-thumb:hover,
+.series-info::-webkit-scrollbar-thumb:hover,
+.report-info::-webkit-scrollbar-thumb:hover {
+	background-color: #a0a0a5;
+}
