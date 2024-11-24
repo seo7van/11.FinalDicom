@@ -70,14 +70,10 @@
 
 	/* 버튼(셀) hover 효과 */
 	.grid-cell:hover {
-	    background-color: #add8e6; /* 호버 시 연한 초록색으로 변경 */
-	    border-color: #0078d4; /* 테두리 색상 변경 */
+	    background-color: #add8e6; /* 호버 시 색상 변경 */
+	    border-color: #0078d4; /* 테두리 색상 */
 	}
 	
-	/* 선택된 버튼 스타일 */
-.grid-cell.selected {
-    background-color: #90ee90; /* 선택된 버튼의 배경색 (연한 초록색) */
-    border: 2px solid #008000; /* 선택된 버튼의 테두리 색상 (초록색) */
-    color: white; /* 선택된 버튼의 텍스트 색상 */
-    font-weight: bold; /* 텍스트 강조 */
-}
+	.grid-cell.selected {
+	    background-color: #90ee90 !important; /* 연한 초록색 */
+	}
